@@ -1,7 +1,16 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
 const getTodo = () => {
+	const route = useRoute();
+	// const router = useRouter()
+
+	const todoId = computed(() => route.params.id);
+	console.log("todoId:", todoId);
+
 	const state = ref({
+		newAuthor: "",
+		newTodoItem: "",
 		todos: {}
 	});
 
@@ -19,9 +28,21 @@ const getTodo = () => {
 	};
 
 	const newTodo = () => {
-		fetch("http://localhost:3000/todos/new/", {
-			method: "POST"
-		});
+		const requestOptions = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+				
+				// "auth-token": state.token
+			},
+			body: JSON.stringify({
+				author: state.value.newAuthor,
+				todo: state.value.newTodoItem
+			})
+		};
+		fetch("http://localhost:3000/todos/new/", requestOptions).then(
+			GetAllTodos()
+		);
 	};
 
 	const deleteTodo = (_id) => {
