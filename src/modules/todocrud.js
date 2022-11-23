@@ -3,7 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 
 const getTodo = () => {
 	const route = useRoute();
-	const router = useRouter()
+	const router = useRouter();
 
 	const todoId = computed(() => route.params.id);
 	console.log("todoId:", todoId.value);
@@ -40,15 +40,15 @@ const getTodo = () => {
 				todo: state.value.newTodoItem
 			})
 		};
-		fetch("http://localhost:3000/todos/new/", requestOptions).then(
-			GetAllTodos()
-		);
+		fetch("http://localhost:3000/todos/new/", requestOptions).then((data) => {
+			data.status === 200 && GetAllTodos()
+		});
 	};
 
-	const deleteTodo = () => {
-		fetch("http://localhost:3000/todos/delete/" + todoId.value, {
+	const deleteTodo = (_id) => {
+		fetch("http://localhost:3000/todos/delete/" + _id, {
 			method: "DELETE"
-		});
+		}).then(GetAllTodos());
 	};
 	const editTodo = () => {
 		const requestOptions = {
@@ -65,7 +65,7 @@ const getTodo = () => {
 		fetch("http://localhost:3000/todos/update/" + todoId.value, requestOptions)
 			.then((res) => res.body)
 			.then((res) => console.log(res));
-			router.push("/todos");
+		router.push("/todos");
 	};
 
 	//get the clicked id
